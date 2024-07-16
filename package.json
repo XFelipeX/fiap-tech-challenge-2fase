@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node src/bin/www",
+    "start": "node ./src/bin/www",
     "start:dev": "tsx watch src/bin/www",
     "test": "jest --forceExit",
     "build": "tsup src --out-dir build"
