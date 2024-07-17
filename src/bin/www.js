@@ -9,7 +9,18 @@
 var app = require('../app');
 var debug = require('debug')('fiap-tech-challenge-2fasefork:server');
 var http = require('http');
+const dbInit = require('../config/db.init')
 require("dotenv").config();
+
+/**
+ *  Initialization database
+ */
+
+(async () => {
+  if (process.env.NODE_ENV === 'development') {
+    await dbInit();
+  }
+})();
 
 /**
  * Get port from environment and store in Express.
