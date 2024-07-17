@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 /**
  * Module dependencies.
  */
+
 
 var app = require('../app');
 var debug = require('debug')('fiap-tech-challenge-2fasefork:server');
@@ -88,4 +90,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log(`Servidor rodando em http://localhost:${port}`)
 }
