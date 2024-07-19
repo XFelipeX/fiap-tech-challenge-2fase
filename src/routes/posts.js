@@ -7,7 +7,7 @@ router.get('/', async function(req, res) {
   const postsModel = new PostsModel();
   const postsList = await postsModel.listPosts();
   console.log(postsList)
-  res.send(postsList)
+  res.render('postsList', { postsList: postsList });
 });
 
 module.exports = router;

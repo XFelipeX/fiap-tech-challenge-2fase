@@ -10,7 +10,18 @@ export class PostsModel implements IPostsModel {
     let result: QueryResult<Posts>;
 
     try {
-      result = await client.query('SELECT * FROM posts');
+      result = await client.query(`
+        SELECT 
+          posts.id,
+          posts.title,
+          posts.content,
+          TO_CHAR(posts.createdDate, 'DD-MM-YYYY HH24:MI:SS') AS createdDate,
+          teacher.name AS teacherName
+      FROM 
+          posts
+      JOIN 
+          teacher ON posts.teacherId = teacher.id;
+        `);
 
     } catch (error) {
       console.error('Erro ao selecionar posts', error);
