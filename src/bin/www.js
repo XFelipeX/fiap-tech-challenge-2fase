@@ -8,7 +8,6 @@
 var app = require('../app');
 var debug = require('debug')('fiap-tech-challenge-2fasefork:server');
 var http = require('http');
-const dbInit = require('../config/db.init')
 require("dotenv").config();
 
 /**
