@@ -15,37 +15,91 @@ export class PostsModel implements IPostsModel {
           posts.id,
           posts.title,
           posts.content,
-          TO_CHAR(posts.createdDate, 'DD-MM-YYYY HH24:MI:SS') AS createdDate,
+          TO_CHAR(posts.createdDate, 'DD/MM/YYYY HH24:MI') AS createdDate,
           teacher.name AS teacherName
-      FROM 
-          posts
-      JOIN 
-          teacher ON posts.teacherId = teacher.id;
+        FROM 
+            posts
+        JOIN 
+            teacher ON posts.teacherId = teacher.id;
         `);
 
     } catch (error) {
       console.error('Erro ao selecionar posts', error);
       return [];
+
+    } finally {
+      client.release();
     }
   
     return result.rows;
   }
-  getPost(id: number): Promise<Posts> {
+
+  public async getPost(id: number): Promise<Posts> {
+    const client = await pool.connect();
+    let result: QueryResult<Posts>;
+
+    try {
+      result = await client.query(`
+        SELECT 
+          posts.id,
+          posts.title,
+          posts.content,
+          TO_CHAR(posts.createdDate, 'DD/MM/YYYY HH24:MI') AS createdDate,
+          teacher.name AS teacherName
+        FROM 
+            posts
+        JOIN 
+            teacher ON posts.teacherId = teacher.id
+        WHERE
+          posts.id = $1;`,
+        [id]
+        );
+
+    } catch (error) {
+      console.error('Erro ao selecionar post', error);
+      throw error;
+
+    } finally {
+      client.release();
+    }
+  
+    return result.rows[0];
+  }
+
+  public async createPost(title: string, content: string, teacherId: number): Promise<Posts> {
+    const client = await pool.connect();
+    let result: QueryResult<Posts>;
+
+    try {
+      result = await client.query(`
+        INSERT INTO posts (title, content, teacherId) VALUES
+        ($1, $2, $3)`,
+        [title, content, teacherId]
+      );
+    } catch (error) {
+      console.error('Erro ao criar post', error);
+      throw error;
+
+    } finally {
+      client.release();
+    }
+
+    return result.rows[0];
+  }
+
+  public async editPost(id: number): Promise<Posts> {
     throw new Error("Method not implemented.");
   }
-  createPost(): Promise<Posts> {
+
+  public async listPostsAdmin(): Promise<Posts[]> {
     throw new Error("Method not implemented.");
   }
-  editPost(id: number): Promise<Posts> {
+
+  public async deletePost(id: number): Promise<Posts> {
     throw new Error("Method not implemented.");
   }
-  listPostsAdmin(): Promise<Posts[]> {
-    throw new Error("Method not implemented.");
-  }
-  deletePost(id: number): Promise<Posts> {
-    throw new Error("Method not implemented.");
-  }
-  searchPosts(search: string): Promise<Posts[]> {
+
+  public async searchPosts(search: string): Promise<Posts[]> {
     throw new Error("Method not implemented.");
   }
   
