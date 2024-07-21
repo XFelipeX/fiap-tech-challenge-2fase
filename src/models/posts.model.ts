@@ -100,7 +100,32 @@ export class PostsModel implements IPostsModel {
   }
 
   public async searchPosts(search: string): Promise<Posts[]> {
-    throw new Error("Method not implemented.");
+    const client = await pool.connect();
+    let result: QueryResult<Posts>;
+    try {
+      result = await client.query(`
+        SELECT 
+          posts.id,
+          posts.title,
+          posts.content,
+          TO_CHAR(posts.createdDate, 'DD/MM/YYYY HH24:MI') AS createdDate,
+          teacher.name AS teacherName
+        FROM 
+          posts
+        JOIN 
+          teacher ON posts.teacherId = teacher.id
+        WHERE
+          posts.title ILIKE $1
+          OR
+          posts.content ILIKE $1;
+        `,[`%${search}%`]);
+    } catch (error) {
+      console.error('Erro ao procurar posts utilizando palavra-chave', error);
+      return []
+    }finally{
+      client.release();
+    }
+    return result.rows;
   }
   
 }
