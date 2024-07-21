@@ -7,7 +7,7 @@ router.get('/', async function (req, res) {
   const postsModel = new PostsModel();
   const postsList = await postsModel.listPosts();
 
-  res.render('postsList', { postsList: postsList });
+  res.render('posts', { title: 'Administrar Posts', postsList: postsList });
 });
 
 router.get('/search', async function (req, res) {
@@ -20,7 +20,7 @@ router.get('/search', async function (req, res) {
   const postsModel = new PostsModel();
   const postsList = await postsModel.searchPosts(search);
 
-  res.render('postsList', { postsList: postsList });
+  res.render('postsList', { title: 'Procurar Posts', postsList: postsList });
 });
 
 router.get('/:id', async function (req, res) {
@@ -29,7 +29,7 @@ router.get('/:id', async function (req, res) {
   const postsModel = new PostsModel();
   const post = await postsModel.getPost(id);
 
-  res.render('readPost', { post: post });
+  res.render('readPost', { title: 'Ver Post', post: post });
 });
 
 router.post('/', async function (req, res) {
