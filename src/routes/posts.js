@@ -42,4 +42,27 @@ router.post('/', async function (req, res) {
   res.redirect('/posts');
 });
 
+router.put('/:id', async function (req, res) {
+  const id = parseInt(req.params.id);
+  const { title, content, teacherId } = req.body;
+
+  const postsModel = new PostsModel();
+  const post = await postsModel.getPost(id);
+
+  if (!post) return res.status(404).send({ error: 'Post not found.' });
+
+  if (title) post.title = title;
+  if (content) post.content = content;
+  if (teacherId) post.teacherid = teacherId;
+
+  const result = await postsModel.editPost(
+    post.id,
+    post.title,
+    post.content,
+    post.teacherid,
+  );
+
+  return res.status(200).json(result);
+});
+
 module.exports = router;

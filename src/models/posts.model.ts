@@ -45,7 +45,8 @@ export class PostsModel implements IPostsModel {
           posts.title,
           posts.content,
           TO_CHAR(posts.createdDate, 'DD/MM/YYYY HH24:MI') AS createdDate,
-          teacher.name AS teacherName
+          teacher.name AS teacherName,
+          teacher.id AS teacherId
         FROM 
             posts
         JOIN 
@@ -87,8 +88,27 @@ export class PostsModel implements IPostsModel {
     return result.rows[0];
   }
 
-  public async editPost(id: number): Promise<Posts> {
-    throw new Error("Method not implemented.");
+  public async editPost(id:number, title: string, content: string, teacherId: number): Promise<Posts> {
+    const client = await pool.connect();
+    let result: QueryResult<Posts>;
+
+    try {
+      result = await client.query(`
+        UPDATE posts 
+        SET title = $1, content = $2, teacherId = $3 
+        WHERE
+        posts.id = $4
+        RETURNING *;`,
+        [title, content, teacherId,id]
+      );
+    } catch (error) {
+      console.error('Erro ao editar post', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+
+    return result.rows[0];
   }
 
   public async listPostsAdmin(): Promise<Posts[]> {
