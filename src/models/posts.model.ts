@@ -116,7 +116,26 @@ export class PostsModel implements IPostsModel {
   }
 
   public async deletePost(id: number): Promise<Posts> {
-    throw new Error("Method not implemented.");
+    const client = await pool.connect();
+    let result: QueryResult<Posts>;
+
+    try {
+      result = await client.query(`
+        DELETE
+        FROM posts
+        WHERE
+        posts.id = $1
+        RETURNING *;`,
+        [id]
+      );
+    } catch (error) {
+      console.error('Erro ao deletar post', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+
+    return result.rows[0];
   }
 
   public async searchPosts(search: string): Promise<Posts[]> {

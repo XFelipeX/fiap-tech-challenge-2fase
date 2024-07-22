@@ -65,4 +65,17 @@ router.put('/:id', async function (req, res) {
   return res.status(200).json(result);
 });
 
+router.delete('/:id', async function (req, res) {
+  const id = parseInt(req.params.id);
+  const postsModel = new PostsModel();
+
+  const post = await postsModel.getPost(id);
+
+  if (!post) return res.status(404).send({ error: 'Post not found.' });
+
+  const result = await postsModel.deletePost(post.id);
+
+  return res.status(200).json(result);
+});
+
 module.exports = router;
