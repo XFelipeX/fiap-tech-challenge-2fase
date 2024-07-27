@@ -24,7 +24,7 @@ const postsModel = new PostsModel();
  *         content:
  *           type: string
  *           description: Conteúdo do post
- *         techerId:
+ *         teacherId:
  *           type: string
  *           description: ID do professor
  */
@@ -49,7 +49,8 @@ const postsModel = new PostsModel();
 router.get('/', async function (req, res) {
   const postsList = await postsModel.listPosts();
 
-  res.render('posts', { title: 'Administrar Posts', posts: postsList });
+  // res.render('posts', { title: 'Administrar Posts', posts: postsList });
+  return res.status(200).json(postsList);
 });
 
 /**
@@ -72,7 +73,8 @@ router.get('/', async function (req, res) {
 router.get('/admin', async function (req, res) {
   const postsList = await postsModel.listPosts();
 
-  res.render('posts', { title: 'Administrar Posts', posts: postsList });
+  // res.render('posts', { title: 'Administrar Posts', posts: postsList });
+  return res.status(200).json(postsList);
 });
 
 /**
@@ -84,9 +86,9 @@ router.get('/admin', async function (req, res) {
  *     parameters:
  *       - in: query
  *         name: keyword
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
  *         description: Palavra-chave para buscar posts
  *     responses:
  *       200:
@@ -118,7 +120,8 @@ router.get('/search', async function (req, res) {
   }
   const postsList = await postsModel.searchPosts(search);
 
-  res.render('postsList', { title: 'Procurar Posts', posts: postsList });
+  // res.render('postsList', { title: 'Procurar Posts', posts: postsList });
+  return res.status(200).json(postsList);
 });
 
 /**
@@ -140,7 +143,20 @@ router.get('/search', async function (req, res) {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Posts'
+ *               type: object
+ *               properties:
+ *                  id:
+ *                    type: number
+ *                    description: ID do posts
+ *                  title:
+ *                    type: string
+ *                    description: Título do post
+ *                  content:
+ *                    type: string
+ *                    description: Conteúdo do post
+ *                  teacherId:
+ *                    type: string
+ *                    description: ID do professor
  *       400:
  *          description: Post não encontrado
  */
@@ -149,8 +165,10 @@ router.get('/:id', async function (req, res) {
   const id = req.params.id;
 
   const post = await postsModel.getPost(id);
+  if (!post) return res.status(400).json({ error: 'Post not found.' });
 
-  res.render('postDetail', { title: 'Detalhes do Post', currentPost: post });
+  // res.render('postDetail', { title: 'Detalhes do Post', currentPost: post });
+  return res.status(200).json(post);
 });
 
 /**
@@ -166,8 +184,24 @@ router.get('/:id', async function (req, res) {
  *           schema:
  *             $ref: '#/components/schemas/Posts'
  *     responses:
- *       201:
+ *       200:
  *         description: Post criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                  id:
+ *                    type: number
+ *                    description: ID do posts
+ *                  title:
+ *                    type: string
+ *                    description: Título do post
+ *                  content:
+ *                    type: string
+ *                    description: Conteúdo do post
+ *                  teacherId:
+ *                    type: string
+ *                    description: ID do professor
  *       400:
  *         description: Requisição inválida
  */
@@ -178,7 +212,8 @@ router.post('/', async function (req, res) {
   const post = await postsModel.createPost(title, content, teacherId);
   console.log(post);
 
-  res.redirect('/posts');
+  // res.redirect('/posts');
+  return res.status(200).json(post);
 });
 
 /**
@@ -203,6 +238,22 @@ router.post('/', async function (req, res) {
  *     responses:
  *       200:
  *         description: Post atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                  id:
+ *                    type: number
+ *                    description: ID do posts
+ *                  title:
+ *                    type: string
+ *                    description: Título do post
+ *                  content:
+ *                    type: string
+ *                    description: Conteúdo do post
+ *                  teacherId:
+ *                    type: string
+ *                    description: ID do professor
  *       404:
  *         description: Post não encontrado
  *       400:
@@ -229,8 +280,8 @@ router.put('/:id', async function (req, res) {
   );
   console.log('result: ' + result);
 
-  res.redirect('/posts');
-  // return res.status(200).json(result);
+  // res.redirect('/posts');
+  return res.status(200).json(result);
 });
 
 /**
@@ -247,10 +298,10 @@ router.put('/:id', async function (req, res) {
  *         required: true
  *         description: ID do post
  *     responses:
- *       204:
- *         description: Post deletado com sucesso
+ *       200:
+ *         description: Post deleted.
  *       404:
- *         description: Post não encontrado
+ *         description: Post not found.
  */
 
 router.delete('/:id', async function (req, res) {
@@ -262,9 +313,9 @@ router.delete('/:id', async function (req, res) {
 
   const result = await postsModel.deletePost(post.id);
   console.log('result: ' + result);
-  res.redirect('/posts');
+  // res.redirect('/posts');
 
-  // return res.status(200).json(result);
+  return res.status(200).json('Post deleted.');
 });
 
 module.exports = router;
