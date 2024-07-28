@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-import { PostsModel } from '../models/posts.model';
+const { PostsModel } = require('../models/posts.model');
 const postsModel = new PostsModel();
 
 /**
@@ -117,8 +117,7 @@ router.get('/search', async function (req, res) {
       .json({ error: 'Query parameter "keyword" is required.' });
   }
   const postsList = await postsModel.searchPosts(search);
-
-  res.render('postsList', { title: 'Procurar Posts', posts: postsList });
+  res.render('posts', { title: 'Procurar Posts', posts: postsList });
 });
 
 /**

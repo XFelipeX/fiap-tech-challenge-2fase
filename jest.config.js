@@ -1,4 +1,5 @@
 module.exports = {
+  verbose: true,
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
