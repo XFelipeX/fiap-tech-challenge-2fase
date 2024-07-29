@@ -77,7 +77,7 @@ router.get('/admin', async function (req, res) {
 
 /**
  * @swagger
- * /search:
+ * /posts/search:
  *   get:
  *     summary: Busca posts por palavra-chave
  *     tags: [Posts]
