@@ -151,6 +151,10 @@ router.get('/:id', async function (req, res) {
 
   const post = await postsModel.getPost(id);
 
+  if (!post) {
+    return res.status(404).json({ error: 'Post not found.' });
+  }
+
   res.render('postDetail', { title: 'Detalhes do Post', currentPost: post });
 });
 
