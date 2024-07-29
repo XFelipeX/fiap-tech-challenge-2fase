@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-import { TeacherModel } from '../models/teacher.model';
+const { TeacherModel } = require('../models/teacher.model');
 const teacherModel = new TeacherModel();
 
 router.get('/', async function(req, res) {
