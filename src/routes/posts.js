@@ -120,7 +120,7 @@ router.get('/search', async function (req, res) {
   }
   const postsList = await postsModel.searchPosts(search);
 
-  res.render('posts', { title: 'Procurar Posts', posts: postsList });
+  return res.status(200).json(postsList);
 });
 
 /**
