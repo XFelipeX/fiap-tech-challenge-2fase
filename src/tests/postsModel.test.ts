@@ -86,7 +86,8 @@ describe('PostsModel', () => {
     expect(post).toEqual(mockPost);
     expect(mockClient.query).toHaveBeenCalledWith(`
         INSERT INTO posts (title, content, teacherId) VALUES
-        ($1, $2, $3)`,
+        ($1, $2, $3)
+        RETURNING *`,
         ['Test Title', 'Test Content', 1]
       );
     expect(mockClient.release).toHaveBeenCalled();

@@ -201,10 +201,20 @@ router.post(
   '/',
   async function (req, res, next) {
     const { title, content, teacherId } = req.body;
-
+    if (!title || !content || !teacherId) {
+      return res.status(400).json({
+        error: 'Missing required fields (title || content || teacherId)',
+      });
+    }
     const post = await postsModel.createPost(title, content, teacherId);
-
-    res.redirect('/posts');
+    if (post) {
+      req.customData = post;
+      req.status = 201;
+    } else {
+      return res.status(500).json({
+        error: 'Failed to create post',
+      });
+    }
     next();
   },
   responseMiddleware,

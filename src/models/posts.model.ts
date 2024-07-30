@@ -74,7 +74,8 @@ export class PostsModel implements IPostsModel {
     try {
       result = await client.query(`
         INSERT INTO posts (title, content, teacherId) VALUES
-        ($1, $2, $3)`,
+        ($1, $2, $3)
+        RETURNING *`,
         [title, content, teacherId]
       );
     } catch (error) {
@@ -84,7 +85,6 @@ export class PostsModel implements IPostsModel {
     } finally {
       client.release();
     }
-
     return result.rows[0];
   }
 
