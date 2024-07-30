@@ -175,3 +175,5 @@ A aplicação é estruturada conforme o modelo MVC (Model-View-Controller), sepa
 - Swagger
 - PostgreSQL
 - EJS
+- Jest
+- ESLint
