@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const { PostsModel } = require('../models/posts.model');
+const { responseMiddleware } = require('../middlewares/responseMiddleware');
 const postsModel = new PostsModel();
 
 /**
@@ -46,11 +47,16 @@ const postsModel = new PostsModel();
  *                 $ref: '#/components/schemas/Posts'
  */
 
-router.get('/', async function (req, res) {
-  const postsList = await postsModel.listPosts();
-
-  res.render('posts', { title: 'Administrar Posts', posts: postsList });
-});
+router.get(
+  '/',
+  async function (req, res, next) {
+    const postsList = await postsModel.listPosts();
+    req.customData = { title: 'Administrar Posts', posts: postsList };
+    req.viewName = 'posts';
+    next();
+  },
+  responseMiddleware,
+);
 
 /**
  * @swagger
@@ -69,11 +75,16 @@ router.get('/', async function (req, res) {
  *                 $ref: '#/components/schemas/Posts'
  */
 
-router.get('/admin', async function (req, res) {
-  const postsList = await postsModel.listPosts();
-
-  res.render('posts', { title: 'Administrar Posts', posts: postsList });
-});
+router.get(
+  '/admin',
+  async function (req, res, next) {
+    const postsList = await postsModel.listPosts();
+    req.customData = { title: 'Administrar Posts', posts: postsList };
+    req.viewName = 'posts';
+    next();
+  },
+  responseMiddleware,
+);
 
 /**
  * @swagger
@@ -109,18 +120,22 @@ router.get('/admin', async function (req, res) {
  *                   description: Post não encontrado
  */
 
-router.get('/search', async function (req, res) {
-  const search = req.query.keyword;
-  if (!search) {
-    return res
-      .status(400)
-      .json({ error: 'Query parameter "keyword" is required.' });
-  }
-  const postsList = await postsModel.searchPosts(search);
+router.get(
+  '/search',
+  async function (req, res, next) {
+    const search = req.query.keyword;
+    if (!search) {
+      return res
+        .status(400)
+        .json({ error: 'Query parameter "keyword" is required.' });
+    }
+    const postsList = await postsModel.searchPosts(search);
 
-  // res.render('posts', { title: 'Procurar Posts', posts: postsList });
-  return res.status(200).json(postsList);
-});
+    req.customData = { title: 'Administrar Posts', posts: postsList };
+    next();
+  },
+  responseMiddleware,
+);
 
 /**
  * @swagger
@@ -146,17 +161,22 @@ router.get('/search', async function (req, res) {
  *          description: Post não encontrado
  */
 
-router.get('/:id', async function (req, res) {
-  const id = req.params.id;
+router.get(
+  '/:id',
+  async function (req, res, next) {
+    const id = req.params.id;
 
-  const post = await postsModel.getPost(id);
+    const post = await postsModel.getPost(id);
 
-  if (!post) {
-    return res.status(404).json({ error: 'Post not found.' });
-  }
-
-  res.render('postDetail', { title: 'Detalhes do Post', currentPost: post });
-});
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found.' });
+    }
+    req.customData = { title: 'Detalhes do Post', currentPost: post };
+    req.viewName = 'postDetail';
+    next();
+  },
+  responseMiddleware,
+);
 
 /**
  * @swagger
@@ -177,14 +197,18 @@ router.get('/:id', async function (req, res) {
  *         description: Requisição inválida
  */
 
-router.post('/', async function (req, res) {
-  const { title, content, teacherId } = req.body;
+router.post(
+  '/',
+  async function (req, res, next) {
+    const { title, content, teacherId } = req.body;
 
-  const post = await postsModel.createPost(title, content, teacherId);
-  console.log(post);
+    const post = await postsModel.createPost(title, content, teacherId);
 
-  res.redirect('/posts');
-});
+    res.redirect('/posts');
+    next();
+  },
+  responseMiddleware,
+);
 
 /**
  * @swagger
