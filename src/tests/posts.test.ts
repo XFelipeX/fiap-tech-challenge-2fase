@@ -124,8 +124,9 @@ describe('Posts API', () => {
     (PostsModel.prototype.createPost as jest.Mock).mockResolvedValue(newPost);
 
     const response = await request(app).post('/posts').send(newPost).set('Accept', 'application/json');
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe('/posts');  // Redirecionando para /posts
+    expect(response.status).toBe(201);
+    expect(response.body).toEqual(newPost)
+    // expect(response.headers.location).toBe('/posts');  // Redirecionando para /posts
     
     expect(PostsModel.prototype.createPost).toHaveBeenCalledWith(
       newPost.title,
