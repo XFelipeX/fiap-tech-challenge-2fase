@@ -6,8 +6,8 @@ Membros do grupo 37:
 
 - Felipe Dias Amorim Pessoa - RM355212 - felipediasamorimpessoa@gmail.com
 - Leonardo Felipe Boatti - leonardoboatti@hotmail.com
-- Sérgio Percevallis Neto - sergioneto261001@gmail.com
-- Thiago Scheffer Fialho - thiago.sch.fialho@gmail.com
+- Sérgio Percevallis Neto - RM354791 - sergioneto261001@gmail.com
+- Thiago Scheffer Fialho - RM353477 - thiago.sch.fialho@gmail.com
 
 [Visualizar Documentação Técnica](#documentação-técnica-do-projeto) <br>
 [Visualizar Escopo/Requisitos](#o-problema)
