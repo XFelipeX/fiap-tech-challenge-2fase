@@ -13,8 +13,15 @@ var postFormRouter = require('./routes/postForm');
 var teachersRouter = require('./routes/teachers');
 var teacherFormRouter = require('./routes/teacherForm');
 const { errorMiddleware } = require('./middlewares/errorMiddleware');
+const cors = require('cors');
 
 var app = express();
+
+// to accept requests from any origin
+// app.use(cors());
+
+// for app to accept requests from the frontend running on port 5173 locally
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 setupSwagger(app);
 
