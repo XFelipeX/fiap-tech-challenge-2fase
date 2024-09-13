@@ -5,7 +5,8 @@ const teacherModel = new TeacherModel();
 
 router.get('/', async function(req, res) {
   const teacherList = await teacherModel.listTeachers();
-  res.render('teachers', { title: 'Professores', teachers: teacherList });
+  //res.render('teachers', { title: 'Professores', teachers: teacherList });
+  res.status(200).json(teacherList)
 });
 
 router.get('/:id', async function(req, res) {
