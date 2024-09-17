@@ -5,5 +5,6 @@ declare module 'express-serve-static-core' {
     customData?: object;
     viewName?: string;
     status?:number
+    userId?: string;
   }
 }
