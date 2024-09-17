@@ -2,17 +2,18 @@ const express = require('express');
 const router = express.Router();
 const { TeacherModel } = require('../models/teacher.model');
 const teacherModel = new TeacherModel();
+const verifyToken = require('../middlewares/authMiddleware');
 
-router.get('/', async function(req, res) {
+router.get('/', verifyToken, async function (req, res) {
   const teacherList = await teacherModel.listTeachers();
   //res.render('teachers', { title: 'Professores', teachers: teacherList });
-  res.status(200).json(teacherList)
+  res.status(200).json(teacherList);
 });
 
-router.get('/:id', async function(req, res) {
+router.get('/:id', async function (req, res) {
   const id = parseInt(req.params.id);
   const teacher = await teacherModel.getTeacher(id);
-  
+
   res.render('teacherForm', { title: 'Professores', teacher: teacher });
 });
 
@@ -36,10 +37,7 @@ router.put('/:id', async function (req, res) {
 
   if (name) teacher.name = name;
 
-  const result = await teacherModel.editTeacher(
-    teacher.id,
-    teacher.name
-  );
+  const result = await teacherModel.editTeacher(teacher.id, teacher.name);
   console.log('result: ' + result);
 
   res.redirect('/teachers');

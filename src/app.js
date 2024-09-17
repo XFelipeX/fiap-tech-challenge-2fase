@@ -12,6 +12,7 @@ var postsRouter = require('./routes/posts');
 var postFormRouter = require('./routes/postForm');
 var teachersRouter = require('./routes/teachers');
 var teacherFormRouter = require('./routes/teacherForm');
+var authRouter = require('./routes/auth');
 const { errorMiddleware } = require('./middlewares/errorMiddleware');
 const cors = require('cors');
 
@@ -36,6 +37,7 @@ app.use(methodOverride('_method'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/auth', authRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
