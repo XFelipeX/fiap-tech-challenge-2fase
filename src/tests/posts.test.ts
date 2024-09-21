@@ -1,13 +1,44 @@
 import request from 'supertest';
 import app from '../app';
 import { PostsModel } from '../models/posts.model';
+import { UserModel } from '../models/user.model';
+const bcrypt = require('bcrypt');
 
 jest.mock('../models/posts.model');
+jest.mock('../models/user.model');
 jest.mock('../config/db.config');
 
 describe('Posts API', () => {
+
   afterEach(() => {
     jest.clearAllMocks();
+  });
+  
+  let token: string;
+
+  beforeAll(async () => {
+
+    const createMockUser = async () => {
+      const hashedPassword = await bcrypt.hash('1234', 10);
+    
+      return {
+        id: 1,
+        email: 'bob@fiap.com.br',
+        password: hashedPassword,
+      };
+    };
+
+    const mockUser = await createMockUser();
+
+    (UserModel.prototype.getUserByEmail as jest.Mock).mockResolvedValue(mockUser);
+    const response = await request(app)
+    .post('/auth/login')
+    .send({
+      email: 'bob@fiap.com.br',
+      password: '1234'
+    });
+  
+    token = response.body.token; 
   });
 
   test('Get /posts', async () => {
@@ -30,7 +61,7 @@ describe('Posts API', () => {
 
     (PostsModel.prototype.listPosts as jest.Mock).mockResolvedValue(mockPosts);
 
-    const response = await request(app).get('/');
+    const response = await request(app).get('/posts').set('Authorization', `${token}`);
     expect(response.status).toBe(200);
     expect(response.text).toContain('Test Title 1');
     expect(response.text).toContain('Test Title 2');
@@ -56,7 +87,7 @@ describe('Posts API', () => {
 
     (PostsModel.prototype.listPosts as jest.Mock).mockResolvedValue(mockPosts);
 
-    const response = await request(app).get('/posts/admin');
+    const response = await request(app).get('/posts/admin').set('Authorization',`${token}`);
     expect(response.status).toBe(200);
     expect(response.text).toContain('Administrar Posts');
     expect(response.text).toContain('Test Title 1');
@@ -123,7 +154,7 @@ describe('Posts API', () => {
 
     (PostsModel.prototype.createPost as jest.Mock).mockResolvedValue(newPost);
 
-    const response = await request(app).post('/posts').send(newPost).set('Accept', 'application/json');
+    const response = await request(app).post('/posts').set('Authorization',`${token}`).send(newPost).set('Accept', 'application/json');
     expect(response.status).toBe(201);
     expect(response.body).toEqual(newPost)
     // expect(response.headers.location).toBe('/posts');  // Redirecionando para /posts
@@ -153,7 +184,7 @@ describe('Posts API', () => {
     (PostsModel.prototype.getPost as jest.Mock).mockResolvedValue(post);
     (PostsModel.prototype.editPost as jest.Mock).mockResolvedValue(updatedPost);
 
-    const response = await request(app).put('/posts/1').send(updatedPost).set('Accept', 'application/json');
+    const response = await request(app).put('/posts/1').send(updatedPost).set('Authorization',`${token}`).set('Accept', 'application/json');
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe('/posts');  // Redirecionando para /posts
 
@@ -169,7 +200,7 @@ describe('Posts API', () => {
   test('Put /posts/:id Post not found', async () => {
     (PostsModel.prototype.getPost as jest.Mock).mockResolvedValue(null);
 
-    const response = await request(app).put('/posts/1').send({
+    const response = await request(app).put('/posts/1').set('Authorization',`${token}`).send({
       title: 'Updated post title',
       content: 'Updated post content',
       teacherId: 1,
@@ -188,7 +219,7 @@ describe('Posts API', () => {
 
     (PostsModel.prototype.getPost as jest.Mock).mockResolvedValue(post);
 
-    const response = await request(app).delete('/posts/1');
+    const response = await request(app).delete('/posts/1').set('Authorization', `${token}`);
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe('/posts');
     
@@ -199,7 +230,7 @@ describe('Posts API', () => {
   test('Delete /posts/:id Post not found', async () => {
     (PostsModel.prototype.getPost as jest.Mock).mockResolvedValue(null);
 
-    const response = await request(app).delete('/posts/1');
+    const response = await request(app).delete('/posts/1').set('Authorization', `${token}`);
     expect(response.status).toBe(404);
     expect(response.body).toEqual({ error: 'Post not found.' });
   });
