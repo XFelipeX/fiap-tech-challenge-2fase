@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../app';
 import { PostsModel } from '../models/posts.model';
 import { UserModel } from '../models/user.model';
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 jest.mock('../models/posts.model');
 jest.mock('../models/user.model');
