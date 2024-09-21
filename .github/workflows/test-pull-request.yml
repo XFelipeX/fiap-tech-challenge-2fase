@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env: ${{ secrets.JWT_SECERT }}
+    env: ${{ secrets.JWT_SECRET }}
     
       
     steps:
