@@ -17,28 +17,31 @@ describe('Posts API', () => {
   let token: string;
 
   beforeAll(async () => {
-
-    const createMockUser = async () => {
-      const hashedPassword = await bcrypt.hash('1234', 10);
-    
-      return {
-        id: 1,
-        email: 'bob@fiap.com.br',
-        password: hashedPassword,
+    try{
+      const createMockUser = async () => {
+        const hashedPassword = await bcrypt.hash('1234', 10);
+      
+        return {
+          id: 1,
+          email: 'bob@fiap.com.br',
+          password: hashedPassword,
+        };
       };
-    };
-
-    const mockUser = await createMockUser();
-
-    (UserModel.prototype.getUserByEmail as jest.Mock).mockResolvedValue(mockUser);
-    const response = await request(app)
-    .post('/auth/login')
-    .send({
-      email: 'bob@fiap.com.br',
-      password: '1234'
-    });
   
-    token = response.body.token; 
+      const mockUser = await createMockUser();
+  
+      (UserModel.prototype.getUserByEmail as jest.Mock).mockResolvedValue(mockUser);
+      const response = await request(app)
+      .post('/auth/login')
+      .send({
+        email: 'bob@fiap.com.br',
+        password: '1234'
+      });
+    
+      token = response.body.token; 
+    }catch(error){
+      console.error(error);
+    }
   });
 
     it('Retorna um token JWT', () => {
