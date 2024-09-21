@@ -41,6 +41,10 @@ describe('Posts API', () => {
     token = response.body.token; 
   });
 
+    it('Retorna um token JWT', () => {
+    expect(token).toBeDefined();
+  });
+
   test('Get /posts', async () => {
     const mockPosts = [
       {
