@@ -4,7 +4,12 @@ const { UserModel } = require('../models/user.model');
 const userModel = new UserModel();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const verifyToken = require('../middlewares/authMiddleware');
 require('dotenv').config();
+
+router.get('/verify-token', verifyToken, (req, res) => {
+  res.status(200).json({ message: 'Token is valid' });
+});
 
 router.post('/register', async (req, res) => {
   try {
