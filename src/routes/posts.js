@@ -4,6 +4,7 @@ var router = express.Router();
 const { PostsModel } = require('../models/posts.model');
 const { responseMiddleware } = require('../middlewares/responseMiddleware');
 const postsModel = new PostsModel();
+const verifyToken = require('../middlewares/authMiddleware');
 
 /**
  * @swagger
@@ -77,6 +78,7 @@ router.get(
 
 router.get(
   '/admin',
+  verifyToken,
   async function (req, res, next) {
     const postsList = await postsModel.listPosts();
     req.customData = { title: 'Administrar Posts', posts: postsList };
@@ -199,6 +201,7 @@ router.get(
 
 router.post(
   '/',
+  verifyToken,
   async function (req, res, next) {
     const { title, content, teacherId } = req.body;
     if (!title || !content || !teacherId) {
@@ -248,7 +251,7 @@ router.post(
  *         description: Requisição inválida
  */
 
-router.put('/:id', async function (req, res) {
+router.put('/:id', verifyToken, async function (req, res) {
   const id = parseInt(req.params.id);
   const { title, content, teacherId } = req.body;
 
@@ -292,7 +295,7 @@ router.put('/:id', async function (req, res) {
  *         description: Post não encontrado
  */
 
-router.delete('/:id', async function (req, res) {
+router.delete('/:id', verifyToken, async function (req, res) {
   const id = parseInt(req.params.id);
 
   const post = await postsModel.getPost(id);

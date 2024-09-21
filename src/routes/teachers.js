@@ -17,7 +17,7 @@ router.get('/:id', async function (req, res) {
   res.render('teacherForm', { title: 'Professores', teacher: teacher });
 });
 
-router.post('/', async function (req, res) {
+router.post('/', verifyToken, async function (req, res) {
   const { name } = req.body;
 
   const teacher = await teacherModel.createTeacher(name);
@@ -26,7 +26,7 @@ router.post('/', async function (req, res) {
   res.redirect('/teachers');
 });
 
-router.put('/:id', async function (req, res) {
+router.put('/:id', verifyToken, async function (req, res) {
   const id = parseInt(req.params.id);
   const { name } = req.body;
 
@@ -44,7 +44,7 @@ router.put('/:id', async function (req, res) {
   // return res.status(200).json(result);
 });
 
-router.delete('/:id', async function (req, res) {
+router.delete('/:id', verifyToken, async function (req, res) {
   const id = parseInt(req.params.id);
 
   const teacher = await teacherModel.getTeacher(id);
