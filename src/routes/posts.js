@@ -304,9 +304,9 @@ router.delete('/:id', verifyToken, async function (req, res) {
 
   const result = await postsModel.deletePost(post.id);
   console.log('result: ' + result);
-  res.redirect('/posts');
+  // res.redirect('/posts');
 
-  // return res.status(200).json(result);
+  return res.status(200).json(result);
 });
 
 module.exports = router;
