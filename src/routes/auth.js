@@ -15,7 +15,7 @@ router.post('/register', async (req, res) => {
   try {
     const { email, password, teacherid } = req.body;
     const user = await userModel.getUserByEmail(email);
-    if (!user) {
+    if (user) {
       return res
         .status(403)
         .json({ error: 'User with that email already exists' });
