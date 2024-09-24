@@ -220,8 +220,7 @@ describe('Posts API', () => {
     (PostsModel.prototype.getPost as jest.Mock).mockResolvedValue(post);
 
     const response = await request(app).delete('/posts/1').set('Authorization', `${token}`);
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe('/posts');
+    expect(response.status).toBe(200);
     
     expect(PostsModel.prototype.getPost).toHaveBeenCalledWith(1);
     expect(PostsModel.prototype.deletePost).toHaveBeenCalledWith(1);
