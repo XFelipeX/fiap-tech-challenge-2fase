@@ -109,7 +109,7 @@ export class UserModel implements IUserModel{
     try {
       result = await client.query(`
         INSERT INTO
-          user (email, password, teacherId)
+          "user" (email, password, teacherId)
         VALUES
           ($1, $2, $3)
         RETURNING *;`,
