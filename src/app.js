@@ -15,6 +15,7 @@ var teacherFormRouter = require('./routes/teacherForm');
 var authRouter = require('./routes/auth');
 const { errorMiddleware } = require('./middlewares/errorMiddleware');
 const cors = require('cors');
+require('dotenv').config();
 
 var app = express();
 
@@ -22,7 +23,7 @@ var app = express();
 // app.use(cors());
 
 // for app to accept requests from the frontend running on port 5173 locally
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: process.env.FRONTEND_HOST }));
 
 setupSwagger(app);
 
