@@ -28,7 +28,7 @@ services:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     environment:
       - NODE_ENV=development
-      - DB_HOST=${POSTGRESDB_HOST}
+      - DB_HOST=postgresdb
       - DB_USER=$POSTGRESDB_USER
       - DB_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
       - DB_DATABASE=$POSTGRESDB_DATABASE
