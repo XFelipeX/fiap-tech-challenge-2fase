@@ -18,6 +18,7 @@ jobs:
       DB_PORT: ${{ secrets.DB_PORT }}
       DB_HOST: ${{ secrets.DB_HOST }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      FRONTEND_HOST: ${{ secrets.FRONTEND_HOST }}
       
     steps:
     - name: Checkout Repository
@@ -47,5 +48,6 @@ jobs:
                      --build-arg DB_PORT=${{ secrets.DB_PORT }} \
                      --build-arg DB_HOST=${{ secrets.DB_HOST }} \
                      --build-arg JWT_SECRET=${{ secrets.JWT_SECRET }} \
+                     --build-arg FRONTEND_HOST=${{ secrets.FRONTEND_HOST }} \
                      -t $DOCKER_USERNAME/fiap-tech-challenge-2fase:latest -f Dockerfile.prd .
         docker push $DOCKER_USERNAME/fiap-tech-challenge-2fase:latest
