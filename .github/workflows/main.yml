@@ -19,6 +19,7 @@ jobs:
       DB_HOST: ${{ secrets.DB_HOST }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       FRONTEND_HOST: ${{ secrets.FRONTEND_HOST }}
+      RENDER_HOOK_URL: ${{ secrets.RENDER_HOOK_URL }}
       
     steps:
     - name: Checkout Repository
