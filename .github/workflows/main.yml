@@ -51,3 +51,7 @@ jobs:
                      --build-arg FRONTEND_HOST=${{ secrets.FRONTEND_HOST }} \
                      -t $DOCKER_USERNAME/fiap-tech-challenge-2fase:latest -f Dockerfile.prd .
         docker push $DOCKER_USERNAME/fiap-tech-challenge-2fase:latest
+
+    - name: Deploy to render using Webhook
+      run: |
+        curl -X POST $RENDER_HOOK_URL
