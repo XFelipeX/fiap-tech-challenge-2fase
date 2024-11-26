@@ -1,3 +1,8 @@
+CREATE TABLE IF NOT EXISTS student (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
+      );
+
 CREATE TABLE IF NOT EXISTS teacher (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL
