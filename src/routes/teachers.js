@@ -3,59 +3,100 @@ const router = express.Router();
 const { TeacherModel } = require('../models/teacher.model');
 const teacherModel = new TeacherModel();
 const verifyToken = require('../middlewares/authMiddleware');
+const { responseMiddleware } = require('../middlewares/responseMiddleware');
 
-router.get('/', verifyToken, async function (req, res) {
-  const teacherList = await teacherModel.listTeachers();
-  //res.render('teachers', { title: 'Professores', teachers: teacherList });
-  res.status(200).json(teacherList);
-});
+router.get(
+  '/',
+  async function (req, res, next) {
+    const teacherList = await teacherModel.listTeachers();
+    req.customData = { title: 'Professores', teachers: teacherList };
+    next();
+  },
+  responseMiddleware,
+);
 
-router.get('/:id', async function (req, res) {
-  const id = parseInt(req.params.id);
-  const teacher = await teacherModel.getTeacher(id);
+router.get(
+  '/:id',
+  async function (req, res, next) {
+    const id = parseInt(req.params.id);
+    const teacher = await teacherModel.getTeacher(id);
 
-  res.render('teacherForm', { title: 'Professores', teacher: teacher });
-});
+    if (!teacher) return res.status(404).send({ error: 'Teacher not found.' });
 
-router.post('/', verifyToken, async function (req, res) {
-  const { name } = req.body;
+    req.customData = {
+      title: 'Detalhes do Professor',
+      currentTeacher: teacher,
+    };
+    next();
+  },
+  responseMiddleware,
+);
 
-  const teacher = await teacherModel.createTeacher(name);
-  console.log(teacher);
+router.post(
+  '/',
+  verifyToken,
+  async function (req, res, next) {
+    const { name } = req.body;
 
-  res.redirect('/teachers');
-});
+    if (!name) {
+      return res.status(400).json({
+        error: 'Name is required.',
+      });
+    }
 
-router.put('/:id', verifyToken, async function (req, res) {
-  const id = parseInt(req.params.id);
-  const { name } = req.body;
+    const teacher = await teacherModel.createTeacher(name);
 
-  const teacher = await teacherModel.getTeacher(id);
-  console.log('teacher: ' + teacher);
+    if (teacher) {
+      req.customData = teacher;
+      req.status = 201;
+    } else {
+      return res.status(500).json({ error: 'Failed to create teacher.' });
+    }
 
-  if (!teacher) return res.status(404).send({ error: 'Professor not found.' });
+    next();
+  },
+  responseMiddleware,
+);
 
-  if (name) teacher.name = name;
+router.put(
+  '/:id',
+  verifyToken,
+  async function (req, res, next) {
+    const id = parseInt(req.params.id);
+    const { name } = req.body;
 
-  const result = await teacherModel.editTeacher(teacher.id, teacher.name);
-  console.log('result: ' + result);
+    const teacher = await teacherModel.getTeacher(id);
 
-  res.redirect('/teachers');
-  // return res.status(200).json(result);
-});
+    if (!teacher) return res.status(404).send({ error: 'Teacher not found.' });
 
-router.delete('/:id', verifyToken, async function (req, res) {
-  const id = parseInt(req.params.id);
+    if (name) teacher.name = name;
 
-  const teacher = await teacherModel.getTeacher(id);
+    const result = await teacherModel.editTeacher(teacher.id, teacher.name);
 
-  if (!teacher) return res.status(404).send({ error: 'Teacher not found.' });
+    res.customData = result;
 
-  const result = await teacherModel.deleteTeacher(teacher.id);
-  console.log('result: ' + result);
-  res.redirect('/teachers');
+    next();
+  },
+  responseMiddleware,
+);
 
-  // return res.status(200).json(result);
-});
+router.delete(
+  '/:id',
+  verifyToken,
+  async function (req, res, next) {
+    const id = parseInt(req.params.id);
+
+    const teacher = await teacherModel.getTeacher(id);
+
+    if (!teacher) return res.status(404).send({ error: 'Teacher not found.' });
+
+    const result = await teacherModel.deleteTeacher(teacher.id);
+    res.customData = result;
+    res.status = 204;
+
+    next();
+  },
+  responseMiddleware,
+);
 
 module.exports = router;
