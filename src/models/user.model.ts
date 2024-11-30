@@ -31,6 +31,33 @@ export class UserModel implements IUserModel{
   
     return result.rows[0];
   }
+  public async getUserByTeacher(teacherid: number): Promise<User> {
+    const client = await pool.connect();
+    let result: QueryResult<User>;
+
+    try {
+      result = await client.query(`
+              SELECT 
+                "user".id,
+                "user".email,
+                "user".password
+              FROM 
+                "user"
+              WHERE
+                "user".teacherid = $1;`,
+              [teacherid]
+              );
+
+    } catch (error) {
+      console.error('Erro ao selecionar usuário', error);
+      throw error;
+
+    } finally {
+      client.release();
+    }
+  
+    return result.rows[0];
+  }
   public async getUser(id: number): Promise<User> {
     const client = await pool.connect();
     let result: QueryResult<User>;
@@ -63,13 +90,13 @@ export class UserModel implements IUserModel{
 
     try {
       result = await client.query(`
-        UPDATE user 
+        UPDATE "user" 
         SET email = $1,
         password = $2
         WHERE
-        user.id = $3
+        "user".id = $3
         RETURNING *;`,
-        [email,password,id]
+        [email, password, id]
       );
     } catch (error) {
       console.error('Erro ao editar professor', error);

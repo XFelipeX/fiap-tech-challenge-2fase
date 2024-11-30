@@ -12,6 +12,7 @@ var postsRouter = require('./routes/posts');
 var postFormRouter = require('./routes/postForm');
 var teachersRouter = require('./routes/teachers');
 var teacherFormRouter = require('./routes/teacherForm');
+var studentsRouter = require('./routes/students');
 var authRouter = require('./routes/auth');
 const { errorMiddleware } = require('./middlewares/errorMiddleware');
 const cors = require('cors');
@@ -45,6 +46,7 @@ app.use('/posts', postsRouter);
 app.use('/postForm', postFormRouter);
 app.use('/teachers', teachersRouter);
 app.use('/teacherForm', teacherFormRouter);
+app.use('/students', studentsRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

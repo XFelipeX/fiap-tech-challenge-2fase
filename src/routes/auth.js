@@ -28,6 +28,22 @@ router.post('/register', async (req, res) => {
   }
 });
 
+router.put('/register', async (req, res) => {
+  try {
+    const { email, password, teacherid } = req.body;
+
+    const user = await userModel.getUserByTeacher(teacherid);
+    const userid = user.id
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await userModel.editUser(userid, email, hashedPassword);
+    
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Registration failed' });
+  }
+});
+
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
