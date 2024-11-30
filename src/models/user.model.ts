@@ -58,6 +58,34 @@ export class UserModel implements IUserModel{
   
     return result.rows[0];
   }
+  public async getUsers(): Promise<User[]> {
+    const client = await pool.connect();
+    let result: QueryResult<User>;
+
+    try {
+      result = await client.query(`
+        SELECT
+          "user".id,
+          "user".email,
+          "user".password,
+          "user".teacherid,
+          teacher.name AS teacherName
+        FROM
+          "user"
+        JOIN
+          teacher ON "user".teacherId = teacher.id`
+        );
+
+    } catch (error) {
+      console.error('Erro ao selecionar usuários', error);
+      throw error;
+
+    } finally {
+      client.release();
+    }
+  
+    return result.rows;
+  }
   public async getUser(id: number): Promise<User> {
     const client = await pool.connect();
     let result: QueryResult<User>;
