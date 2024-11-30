@@ -63,7 +63,8 @@ export class StudentModel implements IStudentModel {
     try {
       result = await client.query(`
         INSERT INTO Student (name) VALUES
-        ($1)`,
+        ($1)
+        RETURNING *`,
         [name]
       );
     } catch (error) {
