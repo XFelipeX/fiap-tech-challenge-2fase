@@ -186,7 +186,6 @@ describe('Posts API', () => {
 
     const response = await request(app).put('/posts/1').send(updatedPost).set('Authorization',`${token}`).set('Accept', 'application/json');
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe('/posts');  // Redirecionando para /posts
 
     expect(PostsModel.prototype.getPost).toHaveBeenCalledWith(1);
     expect(PostsModel.prototype.editPost).toHaveBeenCalledWith(
@@ -219,8 +218,8 @@ describe('Posts API', () => {
 
     (PostsModel.prototype.getPost as jest.Mock).mockResolvedValue(post);
 
-    const response = await request(app).delete('/posts/1').set('Authorization', `${token}`);
-    expect(response.status).toBe(200);
+    const response = await request(app).delete('/posts/1').set('Authorization', `${token}`,).set('Accept', 'application/json');
+    expect(response.status).toBe(204);
     
     expect(PostsModel.prototype.getPost).toHaveBeenCalledWith(1);
     expect(PostsModel.prototype.deletePost).toHaveBeenCalledWith(1);

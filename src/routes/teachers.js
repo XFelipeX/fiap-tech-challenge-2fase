@@ -73,7 +73,7 @@ router.put(
 
     const result = await teacherModel.editTeacher(teacher.id, teacher.name);
 
-    res.customData = result;
+    req.customData = result;
 
     next();
   },
@@ -91,8 +91,8 @@ router.delete(
     if (!teacher) return res.status(404).send({ error: 'Teacher not found.' });
 
     const result = await teacherModel.deleteTeacher(teacher.id);
-    res.customData = result;
-    res.status = 204;
+    req.customData = result;
+    req.status = 204;
 
     next();
   },

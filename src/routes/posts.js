@@ -251,29 +251,37 @@ router.post(
  *         description: Requisição inválida
  */
 
-router.put('/:id', verifyToken, async function (req, res) {
-  const id = parseInt(req.params.id);
-  const { title, content, teacherId } = req.body;
+router.put(
+  '/:id',
+  verifyToken,
+  async function (req, res, next) {
+    const id = parseInt(req.params.id);
+    const { title, content, teacherId } = req.body;
 
-  const post = await postsModel.getPost(id);
+    const post = await postsModel.getPost(id);
 
-  if (!post) return res.status(404).send({ error: 'Post not found.' });
+    if (!post) return res.status(404).send({ error: 'Post not found.' });
 
-  if (title) post.title = title;
-  if (content) post.content = content;
-  if (teacherId) post.teacherid = teacherId;
+    if (title) post.title = title;
+    if (content) post.content = content;
+    if (teacherId) post.teacherid = teacherId;
 
-  const result = await postsModel.editPost(
-    post.id,
-    post.title,
-    post.content,
-    post.teacherid,
-  );
-  console.log('result: ' + result);
+    const result = await postsModel.editPost(
+      post.id,
+      post.title,
+      post.content,
+      post.teacherid,
+    );
 
-  res.redirect('/posts');
-  // return res.status(200).json(result);
-});
+    if (result) {
+      req.customData = result;
+      req.status = 302;
+    }
+
+    next();
+  },
+  responseMiddleware,
+);
 
 /**
  * @swagger
@@ -295,18 +303,24 @@ router.put('/:id', verifyToken, async function (req, res) {
  *         description: Post não encontrado
  */
 
-router.delete('/:id', verifyToken, async function (req, res) {
-  const id = parseInt(req.params.id);
+router.delete(
+  '/:id',
+  verifyToken,
+  async function (req, res, next) {
+    const id = parseInt(req.params.id);
 
-  const post = await postsModel.getPost(id);
+    const post = await postsModel.getPost(id);
 
-  if (!post) return res.status(404).send({ error: 'Post not found.' });
+    if (!post) return res.status(404).send({ error: 'Post not found.' });
 
-  const result = await postsModel.deletePost(post.id);
-  console.log('result: ' + result);
-  // res.redirect('/posts');
+    const result = await postsModel.deletePost(post.id);
 
-  return res.status(200).json(result);
-});
+    req.customData = result;
+    req.status = 204;
+
+    next();
+  },
+  responseMiddleware,
+);
 
 module.exports = router;
