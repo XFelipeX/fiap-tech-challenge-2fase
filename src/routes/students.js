@@ -92,7 +92,7 @@ router.delete(
 
     const result = await studentModel.deleteStudent(student.id);
     res.customData = result;
-    res.status = 204;
+    res.status(204);
 
     next();
   },

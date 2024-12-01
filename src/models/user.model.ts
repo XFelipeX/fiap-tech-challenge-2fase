@@ -93,12 +93,12 @@ export class UserModel implements IUserModel{
     try {
       result = await client.query(`
         SELECT 
-          user.id,
-          user.email
+          "user".id,
+          "user".email
         FROM 
-          user
+          "user"
         WHERE
-          user.id = $1;`,
+          "user".id = $1;`,
         [id]
         );
 
@@ -142,9 +142,9 @@ export class UserModel implements IUserModel{
     try {
       result = await client.query(`
         DELETE
-        FROM user
+        FROM "user"
         WHERE
-        user.id = $1
+        "user".id = $1
         RETURNING *;`,
         [id]
       );
