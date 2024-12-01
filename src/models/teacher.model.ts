@@ -63,7 +63,8 @@ export class TeacherModel implements ITeacherModel {
     try {
       result = await client.query(`
         INSERT INTO teacher (name) VALUES
-        ($1)`,
+        ($1)
+        RETURNING *`,
         [name]
       );
     } catch (error) {

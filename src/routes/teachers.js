@@ -91,6 +91,7 @@ router.delete(
     if (!teacher) return res.status(404).send({ error: 'Teacher not found.' });
 
     const result = await teacherModel.deleteTeacher(teacher.id);
+
     req.customData = result;
     req.status = 204;
 

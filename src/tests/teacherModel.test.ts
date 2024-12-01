@@ -75,7 +75,8 @@ describe('TeacherModel', () => {
     expect(teacher).toEqual(mockTeacher);
     expect(mockClient.query).toHaveBeenCalledWith(`
         INSERT INTO teacher (name) VALUES
-        ($1)`,
+        ($1)
+        RETURNING *`,
         ['New Teacher']
     );
     expect(mockClient.release).toHaveBeenCalled();

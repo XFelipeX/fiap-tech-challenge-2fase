@@ -10,7 +10,7 @@ router.get(
   verifyToken,
   async function (req, res, next) {
     const studentList = await studentModel.listStudents();
-    req.customData = { title: 'Listar Alunos', posts: studentList };
+    req.customData = { title: 'Listar Alunos', students: studentList };
     next();
   },
   responseMiddleware,
@@ -92,7 +92,7 @@ router.delete(
 
     const result = await studentModel.deleteStudent(student.id);
     res.customData = result;
-    res.status = 204;
+    res.status(204);
 
     next();
   },
